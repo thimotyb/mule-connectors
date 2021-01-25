@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="american-flights-example" format="json">
+      <types:shape format="weave" example="examples/american-flights-example.json"><![CDATA[%dw 2.0
+
+type american_flights_example = Array<{|  ID: Number {"typeId": "int"},   code: String,   price: Number {"typeId": "int"},   departureDate: String,   origin: String,   destination: String,   emptySeats: Number {"typeId": "int"},   plane: {|    "type": String,     totalSeats: Number {"typeId": "int"}  |}|}> {"example": "[{\\\"ID\\\":1,\\\"code\\\":\\\"ER38sd\\\",\\\"price\\\":400,\\\"departureDate\\\":\\\"2017\\/07\\/26\\\",\\\"origin\\\":\\\"CLE\\\",\\\"destination\\\":\\\"SFO\\\",\\\"emptySeats\\\":0,\\\"plane\\\":{\\\"type\\\":\\\"Boeing 737\\\",\\\"totalSeats\\\":150}},{\\\"ID\\\":2,\\\"code\\\":\\\"ER45if\\\",\\\"price\\\":540.99,\\\"departureDate\\\":\\\"2017\\/07\\/27\\\",\\\"origin\\\":\\\"SFO\\\",\\\"destination\\\":\\\"ORD\\\",\\\"emptySeats\\\":54,\\\"plane\\\":{\\\"type\\\":\\\"Boeing 777\\\",\\\"totalSeats\\\":300}}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="american-raw-flights-example" format="json">
+      <types:shape format="weave" example="examples/american-raw-flights-example.json"><![CDATA[%dw 2.0
+
+type american_raw_flights_example = Array<{|  planeType: String,   code2: String,   takeOffDate: String,   code1: String,   fromAirport: String,   price: Number {"typeId": "int"},   seatsAvailable: Number {"typeId": "int"},   toAirport: String,   ID: Number {"typeId": "int"},   airlineName: String,   totalSeats: Number {"typeId": "int"}|}> {"example": "[{\\\"planeType\\\":\\\"Boeing 737\\\",\\\"code2\\\":\\\"1093\\\",\\\"takeOffDate\\\":\\\"2016-02-11T00:00:00\\\",\\\"code1\\\":\\\"rree\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"price\\\":142,\\\"seatsAvailable\\\":1,\\\"toAirport\\\":\\\"SFO\\\",\\\"ID\\\":5,\\\"airlineName\\\":\\\"American Airlines\\\",\\\"totalSeats\\\":150},{\\\"planeType\\\":\\\"Boeing 777\\\",\\\"code2\\\":\\\"1994\\\",\\\"takeOffDate\\\":\\\"2016-01-01T00:00:00\\\",\\\"code1\\\":\\\"eefd\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"price\\\":676,\\\"seatsAvailable\\\":0,\\\"toAirport\\\":\\\"SFO\\\",\\\"ID\\\":7,\\\"airlineName\\\":\\\"American Airlines\\\",\\\"totalSeats\\\":300}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#23edd51e-561f-414e-be80-3d4735f6a568">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="american-flights-example"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#69bde7fd-55ff-4de7-af9a-9d42195bbbb4">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="american-raw-flights-example"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="american-flights-example"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

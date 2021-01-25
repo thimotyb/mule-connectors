@@ -1,0 +1,28 @@
+[
+  {
+    "planeType": "Boeing 737",
+    "code2": "1093",
+    "takeOffDate": "2016-02-11T00:00:00",
+    "code1": "rree",
+    "fromAirport": "MUA",
+    "price": 142,
+    "seatsAvailable": 1,
+    "toAirport": "SFO",
+    "ID": 5,
+    "airlineName": "American Airlines",
+    "totalSeats": 150
+  },
+  {
+    "planeType": "Boeing 777",
+    "code2": "1994",
+    "takeOffDate": "2016-01-01T00:00:00",
+    "code1": "eefd",
+    "fromAirport": "MUA",
+    "price": 676,
+    "seatsAvailable": 0,
+    "toAirport": "SFO",
+    "ID": 7,
+    "airlineName": "American Airlines",
+    "totalSeats": 300
+  }
+]
