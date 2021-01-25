@@ -28,7 +28,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			</route>
 		</scatter-gather>
 		<logger level="INFO" doc:name="Logger" doc:id="54a42823-bb59-49e5-a42e-4a47152b9336" message="Tornato dallo S/G"/>
-		<ee:transform doc:name="Transform Message" doc:id="18d8afff-28d9-4d8b-8a16-814e88257721" >
+		<ee:transform doc:name="Flatten JSON" doc:id="18d8afff-28d9-4d8b-8a16-814e88257721" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
