@@ -18,10 +18,30 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		</wsc:connection>
 	</wsc:config>
 	<flow name="getAllAirlines" doc:id="7f116587-544f-4c9b-97d0-edb8a15e2018" >
-		<http:listener doc:name="GET /all" doc:id="0fe54b51-ba35-43ba-b2cf-28b6629fe26d" config-ref="HTTP_Listener_config" path="/all"/>
+		<http:listener doc:name="GET /all" doc:id="0fe54b51-ba35-43ba-b2cf-28b6629fe26d" config-ref="HTTP_Listener_config" path="/all">
+			<http:error-response statusCode="#[vars.statusCode default 500]">
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<set-variable value="#[message.attributes.queryParams.destination]" doc:name="Set destination" doc:id="d670a0c5-5408-4bf4-979b-da020a83aaf9" variableName="destination"/>
 		<scatter-gather doc:name="Scatter-Gather" doc:id="f6776724-0372-422c-adba-8c230eb582dd" >
 			<route >
-				<flow-ref doc:name="getAmericanFlights" doc:id="35ca320d-3e95-4a8b-ac8f-b5c32195dbc6" name="getAmericanFlights"/>
+				<try doc:name="Try" doc:id="d95455f5-a687-4c3a-83f7-2f4e3b02479e" >
+					<flow-ref doc:name="getAmericanFlights" doc:id="35ca320d-3e95-4a8b-ac8f-b5c32195dbc6" name="getAmericanFlights" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b7242460-b299-4f49-8f99-2120645789a3" >
+							<logger level="WARN" doc:name="Logger" doc:id="50c6c49e-3fed-495e-b988-4f6615f3b4c2" message="Skipping data from American Flights."/>
+							<ee:transform doc:name="Transform Message" doc:id="7a6b13b6-12ac-4663-a485-2da273f62492" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[]]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						</on-error-continue>
+					</error-handler>
+				</try>
 			</route>
 			<route >
 				<flow-ref doc:name="getDeltaFlights" doc:id="4aa96ba3-f559-4844-aa9e-b9d16c17d426" name="getDeltaFlights"/>
@@ -40,7 +60,7 @@ flatten(payload..payload)]]></ee:set-payload>
 	</flow>
 	<flow name="getAmericanFlights" doc:id="8e33024a-4200-42dc-8943-3ee521271f27" >
 		<http:listener doc:name="GET /american" doc:id="a05d98dc-faaf-4dbf-a882-ac11c011c634" config-ref="HTTP_Listener_config" path="/american"/>
-		<american-flights-api:get-flights doc:name="Get flights" doc:id="2babad21-f88d-491d-b146-334aa9d4c3d8" config-ref="American_Flights_API_Config" client-id="d1374b15c6864c3682ddbed2a247a826" client-secret="4a87fe7e2e43488c927372AEF981F066" destination="SFO"/>
+		<american-flights-api:get-flights doc:name="Get flights" doc:id="2babad21-f88d-491d-b146-334aa9d4c3d8" config-ref="American_Flights_API_Config" client-id="9612cbdd0e3445bfac25b7b5d2bd1d0b" client-secret="3677A6a01567436cB73Cd8537E151c98" destination="#[vars.destination]"/>
 		<ee:transform doc:name="Transform Message" doc:id="69bde7fd-55ff-4de7-af9a-9d42195bbbb4" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<configuration doc:name="Configuration" doc:id="e8767560-0b7c-4eee-9d09-642deaabab81" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="5fce3cc3-6f57-493d-b30f-1758a2ecbca5" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="62cac5a1-867f-4de1-90c8-4c5833aceaa3" type="AMERICAN-FLIGHTS-API:BAD_REQUEST">
+			<logger level="ERROR" doc:name="Logger" doc:id="69ae3b07-f468-41dc-84db-e691c707ba1f" message="#['\n******ACCIDENTI! ERRORE! GLOBAL ERROR HANDLER']"/>
+			<ee:transform doc:name="Transform Message" doc:id="391dc6fc-91b1-4c87-a409-4e30027bef73" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "GLOBAL EH: Destinazione non valida."
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="400" doc:name="Set statusCode" doc:id="0ec8e19e-56fc-49a3-a39c-a1172dfa5683" variableName="statusCode"/>
+		</on-error-propagate>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="35d49417-b088-4a9d-8e23-10a6e34f2076" type="ANY">
+			<logger level="INFO" doc:name="Logger" doc:id="120098ba-c945-41a6-8af0-c73997493018" message="#['\n####ANY GLOBAL ERROR HANDLER']"/>
+		</on-error-continue>
+	</error-handler>
+</mule>
